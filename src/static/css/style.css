@@ -16,7 +16,8 @@ a:hover{
 
 .login-box {
     padding-top: 20px;
-    margin-top: 75px;
+    margin-top: 40px;
+    border-radius: 10px;
     height: auto;
     background: #1A2226;
     text-align: center;
@@ -106,8 +107,8 @@ label {
 
 .btn-outline-primary {
     border-color: #27EF9F;
-    color: #27EF9F;
-    border-radius: 0px;
+    color: #ffffff;
+    border-radius: 7px;
     font-weight: bold;
     letter-spacing: 1px;
     width: 100%;
