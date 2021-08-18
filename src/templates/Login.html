@@ -32,14 +32,9 @@
                             <div class="form-group">
                                 <input type="password" class="form-control" placeholder="Password">
                             </div>
-
-                            <div class="col-lg-12 loginbttm">
-                                <div class="col-lg-6 login-btm login-text">
-                                    <!-- Error Message -->
-                                </div>
-                                <div class="col-lg-6 login-btm login-button">
-                                    <button type="submit" class="btn btn-outline-primary">Login</button>
-                                </div>
+                            <p class="text-left"><a href="{% url 'reset_password' %}" name = 'reset_password'>Forgot Password?</a></p>
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-outline-primary" type="button">Login</button>
                             </div>
                             <br> 
                             <p class="text-center">Don't have an Account? <a href="{% url 'Register' %}" name = 'Register'>Sign Up</a></p>
