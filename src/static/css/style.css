@@ -1,9 +1,21 @@
 body {
     background: #222D32;
     font-family: 'Roboto', sans-serif;
+    color: #ffffff;
+}
+
+a{
+    text-decoration: none;
+    color: #27EF9F;
+}
+
+a:hover{
+    text-decoration: none;
+    color: #27EF9F;
 }
 
 .login-box {
+    padding-top: 50px;
     margin-top: 75px;
     height: auto;
     background: #1A2226;
@@ -15,7 +27,7 @@ body {
     height: 100px;
     font-size: 80px;
     line-height: 100px;
-    background: -webkit-linear-gradient(#27EF9F, #0DB8DE);
+    background: -webkit-linear-gradient(#27EF9F, #27EF9F);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -27,7 +39,7 @@ body {
     letter-spacing: 2px;
     margin-top: 15px;
     font-weight: bold;
-    color: #ECF0F5;
+    color: #FFFFFF;
 }
 
 .login-form {
@@ -38,27 +50,27 @@ body {
 input[type=text] {
     background-color: #1A2226;
     border: none;
-    border-bottom: 2px solid #0DB8DE;
+    border-bottom: 2px solid #27EF9F;
     border-top: 0px;
     border-radius: 0px;
     font-weight: bold;
     outline: 0;
     margin-bottom: 20px;
     padding-left: 0px;
-    color: #ECF0F5;
+    color: #FFFFFF;
 }
 
 input[type=password] {
     background-color: #1A2226;
     border: none;
-    border-bottom: 2px solid #0DB8DE;
+    border-bottom: 2px solid #27EF9F;
     border-top: 0px;
     border-radius: 0px;
     font-weight: bold;
     outline: 0;
     padding-left: 0px;
     margin-bottom: 20px;
-    color: #ECF0F5;
+    color: #FFFFFF;
 }
 
 .form-group {
@@ -70,10 +82,10 @@ input[type=password] {
     border-color: inherit;
     -webkit-box-shadow: none;
     box-shadow: none;
-    border-bottom: 2px solid #0DB8DE;
+    border-bottom: 2px solid #27EF9F;
     outline: 0;
     background-color: #1A2226;
-    color: #ECF0F5;
+    color: #FFFFFF;
 }
 
 input:focus {
@@ -87,14 +99,14 @@ label {
 
 .form-control-label {
     font-size: 10px;
-    color: #6C6C6C;
+    color: #FFFFFF;
     font-weight: bold;
     letter-spacing: 1px;
 }
 
 .btn-outline-primary {
-    border-color: #0DB8DE;
-    color: #0DB8DE;
+    border-color: #27EF9F;
+    color: #27EF9F;
     border-radius: 0px;
     font-weight: bold;
     letter-spacing: 1px;
@@ -102,7 +114,8 @@ label {
 }
 
 .btn-outline-primary:hover {
-    background-color: #0DB8DE;
+    background-color: #27EF9F;
+    border-color: #27EF9F;
     right: 0px;
 }
 
@@ -119,7 +132,7 @@ label {
 .login-text {
     text-align: left;
     padding-left: 0px;
-    color: #A2A4A4;
+    color: #FFFFFF;
 }
 
 .loginbttm {
