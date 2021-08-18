@@ -44,14 +44,20 @@
                             <div class="form-group">
                                 <input type="email" class="form-control" placeholder="Email Address">
                             </div>
-                            <div class="form-group">
-                                <input type="password" class="form-control" placeholder="Password">
-                            </div>
-                            <div class="form-group">
-                                <input type="password1" class="form-control" placeholder="Confirm Password">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <input type="password" class="form-control" placeholder="Password">
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <input type="password1" class="form-control" placeholder="Confirm Password">
+                                    </div>
+                                </div>
                             </div>
                             <div class="d-grid gap-2">
-                                <button class="btn btn-outline-primary" type="button">Login</button>
+                                <button class="btn btn-outline-primary" type="button">Register</button>
                             </div>
                             <br> 
                             <p class="text-center">Already have an Account? <a href="{% url 'Login' %}" name = 'Login'>Login</a></p>

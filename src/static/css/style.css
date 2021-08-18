@@ -133,8 +133,8 @@ label {
 
 .btn-outline-primary {
     border-color: #27EF9F;
+    background-color: #27EF9F;
     color: #ffffff;
-    border-radius: 7px;
     font-weight: bold;
     letter-spacing: 1px;
     width: 100%;
