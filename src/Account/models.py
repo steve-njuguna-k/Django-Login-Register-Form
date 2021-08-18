@@ -251,7 +251,7 @@ COUNTRIES = [
 ]
 
 # Create your models here.
-class Users(models.Model):
+class Profile(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     country = models.CharField(verbose_name="Country", max_length=50, choices=COUNTRIES, null=True, blank=True)
     is_email_verified = models.BooleanField(default=False)
