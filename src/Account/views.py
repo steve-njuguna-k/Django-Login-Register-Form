@@ -2,7 +2,8 @@ from django.shortcuts import render, redirect, reverse
 from django.contrib import messages
 from validate_email import validate_email
 from .models import Profile
-from .forms import LoginForm, SignUpForm, ProfileForm
+from .forms import LoginForm, SignUpForm
+from django.contrib.auth.models import User
 from django.core.mail import EmailMessage
 from django.conf import settings
 import threading
@@ -26,7 +27,7 @@ class EmailThread(threading.Thread):
 def send_activation_email(user, request):
     current_site = get_current_site(request)
     email_subject = 'Activate your account'
-    email_body = render_to_string('authentication/activate.html', {
+    email_body = render_to_string('Activation.html', {
         'user': user,
         'domain': current_site,
         'uid': urlsafe_base64_encode(force_bytes(user.pk)),
@@ -41,69 +42,74 @@ def send_activation_email(user, request):
     if not settings.TESTING:
         EmailThread(email).start()
 
-def Login(requests):
-    return render(requests, 'Login.html')
+def Login(request):
+    return render(request, 'Login.html')
 
 @auth_user_should_not_access
-def Register(requests):
+def Register(request):
     form = SignUpForm()
-    if requests.method == "POST":
-        context = {'has_error': False, 'data': requests.POST}
-        first_name = requests.POST.get('first_name')
-        last_name = requests.POST.get('last_name')
-        email = requests.POST.get('email')
-        username = requests.POST.get('username')
-        password1 = requests.POST.get('password1')
-        password2 = requests.POST.get('password2')
+    if request.method == "POST":
+        form = SignUpForm(request.POST)
+        context = {'has_error': False, 'data': request.POST}
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        email = request.POST.get('email')
+        username = request.POST.get('username')
+        password1 = request.POST.get('password1')
+        password2 = request.POST.get('password2')
 
         if len(password1) < 6:
-            messages.add_message(requests, messages.ERROR,'Password should be at least 6 characters')
+            messages.add_message(request, messages.ERROR,'Password should be at least 6 characters')
             context['has_error'] = True
+            return redirect('Register')
 
         if password1 != password2:
-            messages.add_message(requests, messages.ERROR,'Password mismatch')
+            messages.add_message(request, messages.ERROR,'Password mismatch')
             context['has_error'] = True
+            return redirect('Register')
 
         if not validate_email(email):
-            messages.add_message(requests, messages.ERROR,'Enter a valid email address')
+            messages.add_message(request, messages.ERROR,'Enter a valid email address')
             context['has_error'] = True
+            return redirect('Register')
 
         if not username:
-            messages.add_message(requests, messages.ERROR,'Username is required')
+            messages.add_message(request, messages.ERROR,'Username is required')
+            context['has_error'] = True
+            return redirect('Register')
+
+        if User.objects.filter(username=username).exists():
+            messages.add_message(request, messages.ERROR,'Username is taken, choose another one')
             context['has_error'] = True
 
-        if Profile.objects.filter(username=username).exists():
-            messages.add_message(requests, messages.ERROR,'Username is taken, choose another one')
+            return render(request, 'Register.html', context, status=409)
+
+        if User.objects.filter(email=email).exists():
+            messages.add_message(request, messages.ERROR,'Email is taken, choose another one')
             context['has_error'] = True
 
-            return render(requests, 'Register.html', context, status=409)
-
-        if Profile.objects.filter(email=email).exists():
-            messages.add_message(requests, messages.ERROR,'Email is taken, choose another one')
-            context['has_error'] = True
-
-            return render(requests, 'Register.html', context, status=409)
+            return render(request, 'Register.html', context, status=409)
 
         if context['has_error']:
-            return render(requests, 'Register.html', context)
+            return render(request, 'Register.html', context)
 
-        user = Profile.objects.create_user(first_name=first_name, last_name=last_name, username=username, email=email, password1=password1)
+        user = User.objects.create_user(first_name=first_name, last_name=last_name, username=username, email=email)
         user.set_password(password1)
         user.save()
 
         if not context['has_error']:
 
-            send_activation_email(user, requests)
+            send_activation_email(user, request)
 
-            messages.add_message(requests, messages.SUCCESS,'We sent you an email to verify your account')
+            messages.add_message(request, messages.SUCCESS,'We sent you an email to verify your account')
             return redirect('Login')
 
-    return render(requests, 'Register.html', {'form':form})
+    return render(request, 'Register.html', {'form':form})
 
-def Logout(requests):
+def Logout(request):
     
-    Logout(requests)
-    messages.add_message(requests, messages.SUCCESS,'Successfully logged out')
+    Logout(request)
+    messages.add_message(request, messages.SUCCESS,'Successfully logged out')
 
     return redirect(reverse('Login'))
 
@@ -112,7 +118,7 @@ def activate_user(request, uidb64, token):
     try:
         uid = force_text(urlsafe_base64_decode(uidb64))
 
-        user = Profile.objects.get(pk=uid)
+        user = User.objects.get(pk=uid)
 
     except Exception as e:
         user = None
@@ -126,5 +132,5 @@ def activate_user(request, uidb64, token):
 
     return render(request, 'Activation Failed.html', {"user": user})
 
-def Dashboard(requests):
-    return render(requests, 'Dashboard.html')
+def Dashboard(request):
+    return render(request, 'Dashboard.html')
