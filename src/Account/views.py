@@ -1,5 +1,6 @@
-from django.http import response
 from django.shortcuts import render
+from .models import Profile
+from .forms import LoginForm, SignUpForm, ProfileForm
 
 # Create your views here.
 def Login(requests):
