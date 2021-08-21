@@ -3,16 +3,18 @@ from django.contrib import messages
 from validate_email import validate_email
 from .models import Profile
 from .forms import LoginForm, SignUpForm
-from django.contrib.auth.models import User
 from django.core.mail import EmailMessage
 from django.conf import settings
-import threading
 from .decorators import auth_user_should_not_access
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str, force_text, DjangoUnicodeDecodeError
 from .utils import generate_token
+import threading
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 # Create your views here.
 class EmailThread(threading.Thread):
@@ -50,7 +52,7 @@ def Register(request):
     form = SignUpForm()
     if request.method == "POST":
         form = SignUpForm(request.POST)
-        context = {'has_error': False, 'data': request.POST}
+        context = {'has_error': False}
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
         email = request.POST.get('email')
@@ -59,33 +61,33 @@ def Register(request):
         password2 = request.POST.get('password2')
 
         if len(password1) < 6:
-            messages.add_message(request, messages.ERROR,'Password should be at least 6 characters')
+            messages.error(request, '⚠️ Password should be at least 6 characters for greater security')
             context['has_error'] = True
             return redirect('Register')
 
         if password1 != password2:
-            messages.add_message(request, messages.ERROR,'Password mismatch')
+            messages.error(request, '⚠️ Password Mismatch! Your Passwords Do Not Match')
             context['has_error'] = True
             return redirect('Register')
 
         if not validate_email(email):
-            messages.add_message(request, messages.ERROR,'Enter a valid email address')
+            messages.error(request, '⚠️ Password Mismatch! Your Passwords Do Not Match')
             context['has_error'] = True
             return redirect('Register')
 
         if not username:
-            messages.add_message(request, messages.ERROR,'Username is required')
+            messages.error(request, '⚠️ Username is required!')
             context['has_error'] = True
             return redirect('Register')
 
         if User.objects.filter(username=username).exists():
-            messages.add_message(request, messages.ERROR,'Username is taken, choose another one')
+            messages.error(request, '⚠️ Username is taken! Choose another one')
             context['has_error'] = True
 
             return render(request, 'Register.html', context, status=409)
 
         if User.objects.filter(email=email).exists():
-            messages.add_message(request, messages.ERROR,'Email is taken, choose another one')
+            messages.error(request, '⚠️ Email is taken! Choose another one')
             context['has_error'] = True
 
             return render(request, 'Register.html', context, status=409)
@@ -101,19 +103,19 @@ def Register(request):
 
             send_activation_email(user, request)
 
-            messages.add_message(request, messages.SUCCESS,'We sent you an email to verify your account')
-            return redirect('Login')
+            messages.success(request, '✅ Sign Up Successful! We sent you an email to verify your account')
+            return redirect('Register')
 
     return render(request, 'Register.html', {'form':form})
 
 def Logout(request):
     
     Logout(request)
-    messages.add_message(request, messages.SUCCESS,'Successfully logged out')
+    messages.success(request, '✅ Successfully Logged Out!')
 
     return redirect(reverse('Login'))
 
-def activate_user(request, uidb64, token):
+def ActivateUser(request, uidb64, token):
 
     try:
         uid = force_text(urlsafe_base64_decode(uidb64))
@@ -127,7 +129,7 @@ def activate_user(request, uidb64, token):
         user.is_email_verified = True
         user.save()
 
-        messages.add_message(request, messages.SUCCESS,'Email verified, you can now login')
+        messages.success(request, '✅ Email Verified! You can now Log in')
         return redirect(reverse('Login'))
 
     return render(request, 'Activation Failed.html', {"user": user})
