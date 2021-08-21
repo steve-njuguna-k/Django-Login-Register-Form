@@ -6,6 +6,7 @@ from .forms import LoginForm, SignUpForm
 from django.core.mail import EmailMessage
 from django.conf import settings
 from .decorators import auth_user_should_not_access
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -50,8 +51,8 @@ def Login(request):
 @auth_user_should_not_access
 def Register(request):
     form = SignUpForm()
+
     if request.method == "POST":
-        form = SignUpForm(request.POST)
         context = {'has_error': False}
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
@@ -62,45 +63,35 @@ def Register(request):
 
         if len(password1) < 6:
             messages.error(request, '⚠️ Password should be at least 6 characters for greater security')
-            context['has_error'] = True
             return redirect('Register')
 
         if password1 != password2:
             messages.error(request, '⚠️ Password Mismatch! Your Passwords Do Not Match')
-            context['has_error'] = True
             return redirect('Register')
 
         if not validate_email(email):
             messages.error(request, '⚠️ Password Mismatch! Your Passwords Do Not Match')
-            context['has_error'] = True
             return redirect('Register')
 
         if not username:
             messages.error(request, '⚠️ Username is required!')
-            context['has_error'] = True
             return redirect('Register')
 
         if User.objects.filter(username=username).exists():
             messages.error(request, '⚠️ Username is taken! Choose another one')
-            context['has_error'] = True
 
-            return render(request, 'Register.html', context, status=409)
+            return render(request, 'Register.html')
 
         if User.objects.filter(email=email).exists():
             messages.error(request, '⚠️ Email is taken! Choose another one')
-            context['has_error'] = True
 
-            return render(request, 'Register.html', context, status=409)
-
-        if context['has_error']:
-            return render(request, 'Register.html', context)
+            return render(request, 'Register.html')
 
         user = User.objects.create_user(first_name=first_name, last_name=last_name, username=username, email=email)
         user.set_password(password1)
         user.save()
 
         if not context['has_error']:
-
             send_activation_email(user, request)
 
             messages.success(request, '✅ Sign Up Successful! We sent you an email to verify your account')
@@ -110,7 +101,7 @@ def Register(request):
 
 def Logout(request):
     
-    Logout(request)
+    logout(request)
     messages.success(request, '✅ Successfully Logged Out!')
 
     return redirect(reverse('Login'))
