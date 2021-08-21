@@ -45,8 +45,29 @@ def send_activation_email(user, request):
     if not settings.TESTING:
         EmailThread(email).start()
 
+@auth_user_should_not_access
 def Login(request):
-    return render(request, 'Login.html')
+    form = SignUpForm()
+
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        user = authenticate(request, username=username, password=password)
+
+        if user and not user.is_email_verified:
+            messages.error(request, '⚠️ Email is not verified, please check your email inbox')
+            return render(request, 'Login.html')
+
+        if not user:
+            messages.error(request, '⚠️ Invalid credentials, try again')
+            return render(request, 'Login.html')
+
+        login(request, user)
+
+        return redirect(reverse('Dashboard'))
+
+    return render(request, 'Login.html', {'form':form})
 
 @auth_user_should_not_access
 def Register(request):
