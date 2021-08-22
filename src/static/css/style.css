@@ -17,6 +17,7 @@ a:hover{
 .login-box {
     padding-top: 20px;
     margin-top: 40px;
+    margin-bottom: 40px;
     border-radius: 10px;
     height: auto;
     background: #1A2226;
