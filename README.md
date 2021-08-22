@@ -58,8 +58,8 @@ Under settings.py, make changes to the Email Setup
 #Email Setup
 EMAIL_FROM_USER = 'Your Email Address'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
+EMAIL_HOST = 'Your Email Host Provider'
+EMAIL_PORT = 'Your Email Host Port Number'
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'Your Email Addres'
 EMAIL_HOST_PASSWORD = 'Your Email Password'
